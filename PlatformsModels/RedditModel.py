@@ -1,4 +1,5 @@
 from praw import Reddit
+from praw.models import Submission, MoreComments
 from config import CLIENT_ID, SECRET_ID, APP_NAME
 
 
@@ -13,6 +14,19 @@ class RedditModel:
         )
 
         self.client = client
+
+    def get_submissions(self, **kwargs):
+        channel = kwargs['channel']
+        time_filter = kwargs['time_filter']
+        limit = kwargs['limit']
+
+        submissions = self.client.subreddit(channel) \
+            .top(time_filter=time_filter, limit=limit)
+
+        return [self.get_submissions_content(submission)
+                for submission in submissions
+                if submission is not submission.over_18]
+
     def get_submissions_content(self, submission: Submission) -> dict:
         return {
             "id": submission.id,
