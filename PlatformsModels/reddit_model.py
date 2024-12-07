@@ -1,6 +1,7 @@
 from praw import Reddit
 from praw.models import Submission, MoreComments
 from config import CLIENT_ID, SECRET_ID, APP_NAME
+import json
 
 
 class RedditModel:
@@ -51,3 +52,19 @@ class RedditModel:
 
         return wanted_comments
 
+
+if __name__ == '__main__':
+    reddit_client = RedditModel(CLIENT_ID, SECRET_ID, APP_NAME)
+
+    reddit = {
+        "channel": "askreddit",
+        "time_filter": "day",
+        "limit": 3
+    }
+
+    submission_list = reddit_client.get_submissions(**reddit)
+
+    with open("../tmp/submissions.json", "w") as json_file:
+        json.dump(submission_list, json_file, indent=4)
+
+    print("Saving is done.")
