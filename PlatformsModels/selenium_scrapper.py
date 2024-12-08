@@ -28,8 +28,6 @@ class SeleniumScrapper:
             self.options.add_argument("--disable-gpu")
             self.options.add_argument("--incognito")
             self.options.add_argument("--enable-automation")
-            self.options.add_argument("--width=1080")
-            self.options.add_argument("--height=1920")
             if headless:
                 self.options.add_argument("--headless")
 
@@ -38,6 +36,7 @@ class SeleniumScrapper:
             # Initialize the webdriver
             self.driver = webdriver.Firefox(options=self.options,
                                             service=self.service)
+            self.driver.maximize_window()
         except Exception as e:
             logging.error(f"Error initializing the webdriver, details: {e}")
 
