@@ -40,14 +40,17 @@ class SeleniumScrapper:
             logging.error(f"Error initializing the webdriver, details: {e}")
 
     def screenShootSubmission(self, submission: dict):
+        def take_screenshot(key_: str, ids: list):
+            path_info = REDDIT_SUBMISSION_PATH.get(key_)
+            for id_ in ids:
+                self.takeTitleScreeshot(path_info["handle"], path_info["value"] % id_)
+
         for key in REDDIT_SUBMISSION_PATH.keys():
             if key == "title":
-                title_handles = REDDIT_SUBMISSION_PATH["title"]
-                self.takeTitleScreeshot(title_handles["handle"], title_handles["value"] % submission.get("id"))
+                take_screenshot(key, [submission.get("id")])
             elif key == "comments":
-                comment_handle = REDDIT_SUBMISSION_PATH["comments"]
-                for comment in submission.get("comments", []):
-                    self.takeTitleScreeshot(comment_handle["handle"], comment_handle["value"] % comment.get("id"))
+                comments_ids = [comment.get("id") for comment in submission["comments"]]
+                take_screenshot(key, comments_ids)
 
     def takeTitleScreeshot(self, handle, id_value, retry_counter=0):
         condition = ec.presence_of_element_located(locator=(handle, id_value))
