@@ -48,6 +48,7 @@ class RedditModel:
                 wanted_comments.append({
                     "id": comment.id,
                     "body": comment.body,
+                    "permalink": comment.permalink
                 })
 
         return wanted_comments
