@@ -1,6 +1,5 @@
-from config import GECKODRIVER
+from config import GECKODRIVER, REDDIT_SUBMISSION_PATH
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
