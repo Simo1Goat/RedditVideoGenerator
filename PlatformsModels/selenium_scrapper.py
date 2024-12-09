@@ -40,15 +40,23 @@ class SeleniumScrapper:
         except Exception as e:
             logging.error(f"Error initializing the webdriver, details: {e}")
 
-    def takeTitleScreeshot(self, identifactor_value, retry_counter=0):
-        handle = By.ID
-        id_value = f"t3_{identifactor_value}"
+    def screenShootSubmission(self, submission: dict):
+        for key in REDDIT_SUBMISSION_PATH.keys():
+            if key == "title":
+                title_handles = REDDIT_SUBMISSION_PATH["title"]
+                self.takeTitleScreeshot(title_handles["handle"], title_handles["value"] % submission.get("id"))
+            elif key == "comments":
+                comment_handle = REDDIT_SUBMISSION_PATH["comments"]
+                for comment in submission.get("comments", []):
+                    self.takeTitleScreeshot(comment_handle["handle"], comment_handle["value"] % comment.get("id"))
+
+    def takeTitleScreeshot(self, handle, id_value, retry_counter=0):
         condition = ec.presence_of_element_located(locator=(handle, id_value))
         while retry_counter <= 3:
             try:
                 found = self.dynamic_wait(10, condition)
                 if found:
-                    self.save_screen_shot(found, identifactor_value)
+                    self.save_screen_shot(found, id_value)
                     break
                 retry_counter += 1
             except NoSuchElementException:
