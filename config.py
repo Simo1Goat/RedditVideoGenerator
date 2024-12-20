@@ -1,4 +1,5 @@
 import os
+from selenium.webdriver.common.by import By
 
 CLIENT_ID = os.getenv('CLIENT_ID', 'CLIENT_ID_VALUE')
 SECRET_ID = os.getenv('SECRET_ID', 'SECRET_ID_VALUE')
