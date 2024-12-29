@@ -1,11 +1,16 @@
 import requests
 from random import choice
 from config import ELEVENLABS_URL, XI_API_KEY
+import logging
+import os
+
+logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
 
 class ElevenLabs:
     voices_url = f"{ELEVENLABS_URL}/voices"
     tts_url = f"{ELEVENLABS_URL}/text-to-speech"
+    voiceover_dir = None
     current_voices = []
 
     def list_all_voices(self):
@@ -24,6 +29,14 @@ class ElevenLabs:
             return 200
 
         return None
+
+    def set_voiceover_dir(self, voiceover_dir):
+        self.voiceover_dir = voiceover_dir
+        if not os.path.exists(self.voiceover_dir):
+            os.mkdir(self.voiceover_dir)
+            logging.info(f"Created new directory {self.voiceover_dir}")
+            return True
+        logging.info(f"Directory {self.voiceover_dir} already exists")
 
     def text_to_speech(self, text_to_speak: dict):
         random_voice = choice(self.current_voices)
