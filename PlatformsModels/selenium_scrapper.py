@@ -58,16 +58,15 @@ class SeleniumScrapper:
             try:
                 found = self.dynamic_wait(10, condition)
                 if found:
-                    self.save_screen_shot(found, id_value)
+                    self.save_screen_shot(found, id_value, is_comment)
                     break
                 retry_counter += 1
             except NoSuchElementException:
                 logging.error(f"the element {id_value} is not found")
                 retry_counter += 1
 
-    def save_screen_shot(self, element: WebElement, handle: str):
-        screenshot_name = f"{self.screenshotDir}/{handle}.png"
     def save_screen_shot(self, element: WebElement, handle: str, is_comment: bool):
+        screenshot_name = f"{self.screenshotDir}/{'comment' if is_comment else 'title'}_{handle}.png"
 
         with open(screenshot_name, "wb") as img_file:
             img_file.write(element.screenshot_as_png)
