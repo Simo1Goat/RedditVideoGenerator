@@ -39,11 +39,11 @@ class SeleniumScrapper:
         except Exception as e:
             logging.error(f"Error initializing the webdriver, details: {e}")
 
-    def screenShootSubmission(self, submission: dict):
-        def take_screenshot(key_: str, ids: list):
+    def screen_shoot_submission(self, submission: dict):
+        def take_screenshot(key_: str, ids: list, is_comment: bool=True):
             path_info = REDDIT_SUBMISSION_PATH.get(key_)
             for id_ in ids:
-                self.takeTitleScreeshot(path_info["handle"], path_info["value"] % id_)
+                self.take_title_screenshot(path_info["handle"], path_info["value"] % id_, is_comment)
 
         for key in REDDIT_SUBMISSION_PATH.keys():
             if key == "title":
@@ -52,7 +52,7 @@ class SeleniumScrapper:
                 comments_ids = [comment.get("id") for comment in submission["comments"]]
                 take_screenshot(key, comments_ids)
 
-    def takeTitleScreeshot(self, handle, id_value, retry_counter=0):
+    def take_title_screenshot(self, handle, id_value, is_comment: bool, retry_counter=0):
         condition = ec.presence_of_element_located(locator=(handle, id_value))
         while retry_counter <= 3:
             try:
@@ -67,6 +67,7 @@ class SeleniumScrapper:
 
     def save_screen_shot(self, element: WebElement, handle: str):
         screenshot_name = f"{self.screenshotDir}/{handle}.png"
+    def save_screen_shot(self, element: WebElement, handle: str, is_comment: bool):
 
         with open(screenshot_name, "wb") as img_file:
             img_file.write(element.screenshot_as_png)
