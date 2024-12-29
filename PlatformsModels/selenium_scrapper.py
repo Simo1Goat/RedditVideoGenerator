@@ -50,20 +50,17 @@ class SeleniumScrapper:
         logging.info("Screenshot directory already exists")
 
     def screen_shoot_submission(self, submission: dict):
-        def take_screenshot(key_: str, ids: list, is_comment: bool=True):
-            path_info = REDDIT_SUBMISSION_PATH.get(key_)
-            for id_ in ids:
-                self.take_title_screenshot(path_info["handle"], path_info["value"] % id_, is_comment)
-
-        for key in REDDIT_SUBMISSION_PATH.keys():
+        for key, path_info in REDDIT_SUBMISSION_PATH.items():
             if key == "title":
-                take_screenshot(key, [submission.get("id")])
+                self.take_title_screenshot(path_info, submission.get("id"), False)
             elif key == "comments":
-                comments_ids = [comment.get("id") for comment in submission["comments"]]
-                take_screenshot(key, comments_ids)
+                comments_ids = [comment.get("id") for comment in submission["comments"][:3]]
+                for comment_id in comments_ids:
+                    self.take_title_screenshot(path_info, comment_id, True)
 
-    def take_title_screenshot(self, handle, id_value, is_comment: bool, retry_counter=0):
-        condition = ec.presence_of_element_located(locator=(handle, id_value))
+    def take_title_screenshot(self, path_info, id_value, is_comment: bool, retry_counter=0):
+        locator = (path_info["handle"], path_info["value"] % id_value)
+        condition = ec.presence_of_element_located(locator)
         while retry_counter <= 3:
             try:
                 found = self.dynamic_wait(10, condition)
