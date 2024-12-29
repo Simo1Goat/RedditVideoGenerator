@@ -7,6 +7,7 @@ from selenium.webdriver.remote.webdriver import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import logging
+import os
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -15,7 +16,7 @@ class SeleniumScrapper:
     driver = None
     options = None
     service = None
-    screenshotDir = "../tmp/screenshots"
+    screenshotDir = None
 
     def __init__(self, headless: bool = False):
         self.get_driver(headless)
@@ -38,6 +39,15 @@ class SeleniumScrapper:
             self.driver.maximize_window()
         except Exception as e:
             logging.error(f"Error initializing the webdriver, details: {e}")
+
+    def set_screenshot_dir(self, submission_id: str):
+        self.screenshotDir = f"../tmp/{submission_id}"
+
+        if not os.path.exists(self.screenshotDir):
+            os.mkdir(self.screenshotDir)
+            logging.info(f"Created directory {self.screenshotDir}")
+            return True
+        logging.info("Screenshot directory already exists")
 
     def screen_shoot_submission(self, submission: dict):
         def take_screenshot(key_: str, ids: list, is_comment: bool=True):
