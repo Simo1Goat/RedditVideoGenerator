@@ -48,16 +48,15 @@ class ElevenLabs:
             return True
         logging.info(f"Directory {self.voiceover_dir} already exists")
 
-    def text_to_speech(self, text_to_speak: dict):
-        random_voice = choice(self.current_voices)
-        self.tts_url += f"/{random_voice.get('voice_id')}/stream"
+    def text_to_speech(self, text_to_speak: dict, is_comment: bool = False):
+        self.set_tts_url()
         headers = {
             "Accept": "application/json",
             "xi-api-key": XI_API_KEY
         }
 
         payload = {
-            "text": text_to_speak.get("body"),
+            "text": text_to_speak.get("body") if is_comment else text_to_speak.get("title"),
             "model_id": "eleven_multilingual_v2",
             "voice_settings": {
                 "stability": 0.5,
@@ -70,12 +69,17 @@ class ElevenLabs:
                                  headers=headers,
                                  json=payload,
                                  stream=True)
+        while not response.ok:
+            self.set_tts_url()
+            response = requests.post(self.tts_url,
+                                     headers=headers,
+                                     json=payload,
+                                     stream=True)
 
-        if response.ok:
-            output_file = f"../tmp/voiceover/comment-{text_to_speak.get('id')}.mp3"
-            with open(output_file, mode="wb") as audio_file:
-                for chunk in response.iter_content(chunk_size=1024):
-                    audio_file.write(chunk)
+        output_file = f"{self.voiceover_dir}/{'comment' if is_comment else 'title'}-{text_to_speak.get('id')}.mp3"
+        with open(output_file, mode="wb") as audio_file:
+            for chunk in response.iter_content(chunk_size=1024):
+                audio_file.write(chunk)
             print("The audio file is saved successfully :)")
         else:
             print(response.text)
