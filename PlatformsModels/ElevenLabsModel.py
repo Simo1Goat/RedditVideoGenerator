@@ -9,9 +9,19 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=lo
 
 class ElevenLabs:
     voices_url = f"{ELEVENLABS_URL}/voices"
-    tts_url = f"{ELEVENLABS_URL}/text-to-speech"
+    basic_tts_url = f"{ELEVENLABS_URL}/text-to-speech"
     voiceover_dir = None
+    tts_url = None
+    current_voice = None
     current_voices = []
+
+    def set_tts_url(self):
+        random_voice = choice(self.current_voices)
+        while random_voice == self.current_voice:
+            random_voice = choice(self.current_voices)
+
+        self.tts_url = f"{self.basic_tts_url}/{random_voice.get('voice_id')}/stream"
+        self.current_voice = random_voice
 
     def list_all_voices(self):
         headers = {
