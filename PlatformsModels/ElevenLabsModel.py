@@ -31,7 +31,7 @@ class ElevenLabs:
         return None
 
     def set_voiceover_dir(self, voiceover_dir):
-        self.voiceover_dir = voiceover_dir
+        self.voiceover_dir = f"../tmp/{voiceover_dir}"
         if not os.path.exists(self.voiceover_dir):
             os.mkdir(self.voiceover_dir)
             logging.info(f"Created new directory {self.voiceover_dir}")
