@@ -16,6 +16,6 @@ REDDIT_SUBMISSION_PATH = {
     },
     "comments": {
         "handle": By.ID,
-        "value": "t1_%s"
+        "value": "t1_%s-comment-rtjson-content"
     }
 }
