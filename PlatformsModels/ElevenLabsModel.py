@@ -81,8 +81,6 @@ class ElevenLabs:
             for chunk in response.iter_content(chunk_size=1024):
                 audio_file.write(chunk)
             print("The audio file is saved successfully :)")
-        else:
-            print(response.text)
 
 
 if __name__ == '__main__':
