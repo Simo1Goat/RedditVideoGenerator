@@ -40,6 +40,9 @@ class SeleniumScrapper:
         except Exception as e:
             logging.error(f"Error initializing the webdriver, details: {e}")
 
+    def get_website(self, website: str):
+        self.driver.get(website)
+
     def set_screenshot_dir(self, submission_id: str):
         self.screenshotDir = f"../tmp/{submission_id}"
 
