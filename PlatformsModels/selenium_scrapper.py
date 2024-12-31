@@ -54,9 +54,9 @@ class SeleniumScrapper:
             if key == "title":
                 self.take_title_screenshot(path_info, submission.get("id"), False)
             elif key == "comments":
-                comments_ids = [comment.get("id") for comment in submission["comments"][:3]]
-                for comment_id in comments_ids:
-                    self.take_title_screenshot(path_info, comment_id, True)
+                for comment in submission["comments"][:3]:
+                    self.get_website(f"{REDDIT_WEBSITE}{comment.get('permalink')}")
+                    self.take_title_screenshot(path_info, comment.get('id'), True)
 
     def take_title_screenshot(self, path_info, id_value, is_comment: bool, retry_counter=0):
         locator = (path_info["handle"], path_info["value"] % id_value)
