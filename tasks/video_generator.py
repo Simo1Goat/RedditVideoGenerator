@@ -1,6 +1,13 @@
 from moviepy import ImageClip, AudioFileClip
 import os
 
+def create_clip(screenShotFile, voiceOverFile):
+    audio_clip = AudioFileClip(voiceOverFile)
+    video_clip = ImageClip(screenShotFile)
+    video_clip.duration = audio_clip.duration
+    video_clip.audio = audio_clip
+
+    return video_clip
 
 def get_matched_pairs(submission_dir: str) -> list[tuple]:
     """
