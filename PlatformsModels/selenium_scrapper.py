@@ -1,4 +1,4 @@
-from config import GECKODRIVER, REDDIT_SUBMISSION_PATH
+from config import GECKODRIVER, REDDIT_SUBMISSION_PATH, REDDIT_WEBSITE
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
@@ -76,7 +76,7 @@ class SeleniumScrapper:
                 retry_counter += 1
 
     def save_screen_shot(self, element: WebElement, handle: str, is_comment: bool):
-        screenshot_name = f"{self.screenshotDir}/{'comment' if is_comment else 'title'}_{handle}.png"
+        screenshot_name = f"{self.screenshotDir}/{'comment' if is_comment else 'title'}-{handle}.png"
 
         with open(screenshot_name, "wb") as img_file:
             img_file.write(element.screenshot_as_png)
