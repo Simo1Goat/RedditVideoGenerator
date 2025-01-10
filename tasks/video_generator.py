@@ -13,7 +13,8 @@ def generate_video(submission_id: str):
         comment_files = [item for item in matched_pairs if item[0].startswith("comment")]
         # the beginning of the clip
         title_clip = create_clip(os.path.join(submission_dir, title_files[0]),
-                                 os.path.join(submission_dir, title_files[1]))
+                                 os.path.join(submission_dir, title_files[1]),
+                                 False)
         clips.append(title_clip)
 
         for comment in comment_files:
@@ -29,8 +30,10 @@ def generate_video(submission_id: str):
     background_vid = choice(background_vids)
     background_vid_path = os.path.join(background_vid_dir, background_vid)
     background_clip = VideoFileClip(filename=background_vid_path).without_audio()
-    background_clip = background_clip.subclip(0, title_and_comment_clips.duration)
+    background_clip = background_clip.subclipped(0, title_and_comment_clips.duration)
 
+    # center the title and comment clips on the background
+    title_and_comment_clips = title_and_comment_clips.with_position(("center", "center"))
     # create a composite clip
     clips = [background_clip, title_and_comment_clips]
     final_clip = CompositeVideoClip(clips)
@@ -42,9 +45,23 @@ def generate_video(submission_id: str):
                                logger="bar")
 
 
-def create_clip(screenShotFile, voiceOverFile):
+def create_clip(screenShotFile, voiceOverFile, is_comment: bool =True):
+
+    def zoom_in(t):
+        scale = 1 + 0.1 * t
+        return scale
+
     audio_clip = AudioFileClip(voiceOverFile)
-    video_clip = ImageClip(screenShotFile)
+    video_clip = ImageClip(screenShotFile) \
+                    .resized(zoom_in) \
+                    .with_position(("center", "center")) \
+                    .with_fps(25)
+
+    if is_comment:
+        video_clip = video_clip \
+                        .resized(1.5) \
+                        .resized(zoom_in)
+
     video_clip.duration = audio_clip.duration
     video_clip.audio = audio_clip
 
