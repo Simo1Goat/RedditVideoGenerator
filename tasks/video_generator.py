@@ -29,6 +29,7 @@ def generate_video(submission_id: str):
     background_vid = choice(background_vids)
     background_vid_path = os.path.join(background_vid_dir, background_vid)
     background_clip = VideoFileClip(filename=background_vid_path).without_audio()
+    background_clip = background_clip.subclip(0, title_and_comment_clips.duration)
 
     # create a composite clip
     clips = [background_clip, title_and_comment_clips]
@@ -68,3 +69,6 @@ def get_matched_pairs(submission_dir: str) -> list[tuple]:
 
     return matched_pairs
 
+
+if __name__ == '__main__':
+    generate_video("1hq286d")
