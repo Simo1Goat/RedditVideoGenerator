@@ -12,11 +12,14 @@ def generate_video(submission_id: str):
         title_files = [item for item in matched_pairs if item[0].startswith("title")][0]
         comment_files = [item for item in matched_pairs if item[0].startswith("comment")]
         # the beginning of the clip
-        title_clip = create_clip(title_files[0], title_files[1])
+        title_clip = create_clip(os.path.join(submission_dir, title_files[0]),
+                                 os.path.join(submission_dir, title_files[1]))
         clips.append(title_clip)
 
         for comment in comment_files:
-            comment_clip = create_clip(comment[0], comment[1])
+            comment_screen = os.path.join(submission_dir, comment[0])
+            comment_voice = os.path.join(submission_dir, comment[1])
+            comment_clip = create_clip(comment_screen, comment_voice)
             clips.append(comment_clip)
 
     title_and_comment_clips = concatenate_videoclips(clips)
@@ -45,6 +48,7 @@ def create_clip(screenShotFile, voiceOverFile):
     video_clip.audio = audio_clip
 
     return video_clip
+
 
 def get_matched_pairs(submission_dir: str) -> list[tuple]:
     """
